@@ -1,13 +1,12 @@
 # Imagem para rodar a Calculadora RTC (regime regular) em servidor (Railway/Render).
 # Arquivo adicionado pela CBrasil; não existe no repositório da Receita, então o "Sync fork" não gera conflito.
 
-FROM eclipse-temurin:25-jdk AS build
+FROM maven:3.9-eclipse-temurin-25 AS build
 WORKDIR /app
 COPY . .
-RUN chmod +x mvnw \
- && mkdir -p calculadora/db \
- && ./mvnw -q flyway:migrate -Dflyway.configFiles=./flyway/flyway-pro.conf --batch-mode --errors \
- && ./mvnw -q clean package -DskipTests --batch-mode
+RUN mkdir -p calculadora/db \
+ && mvn -q flyway:migrate -Dflyway.configFiles=./flyway/flyway-pro.conf --batch-mode --errors \
+ && mvn -q clean package -DskipTests --batch-mode
 
 FROM eclipse-temurin:25-jre
 WORKDIR /app
